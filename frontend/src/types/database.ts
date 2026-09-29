@@ -123,6 +123,16 @@ export type Database = {
           shipping_address: Json;
           razorpay_order_id: string | null;
           razorpay_payment_id: string | null;
+          paid_at: string | null;
+          payment_issue: string | null;
+          idempotency_key: string | null;
+          customer_email_sent_at: string | null;
+          admin_email_sent_at: string | null;
+          shipped_email_sent_at: string | null;
+          courier_name: string | null;
+          tracking_number: string | null;
+          tracking_url: string | null;
+          shipped_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -139,6 +149,16 @@ export type Database = {
           shipping_address: Json;
           razorpay_order_id?: string | null;
           razorpay_payment_id?: string | null;
+          paid_at?: string | null;
+          payment_issue?: string | null;
+          idempotency_key?: string | null;
+          customer_email_sent_at?: string | null;
+          admin_email_sent_at?: string | null;
+          shipped_email_sent_at?: string | null;
+          courier_name?: string | null;
+          tracking_number?: string | null;
+          tracking_url?: string | null;
+          shipped_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -155,6 +175,16 @@ export type Database = {
           shipping_address?: Json;
           razorpay_order_id?: string | null;
           razorpay_payment_id?: string | null;
+          paid_at?: string | null;
+          payment_issue?: string | null;
+          idempotency_key?: string | null;
+          customer_email_sent_at?: string | null;
+          admin_email_sent_at?: string | null;
+          shipped_email_sent_at?: string | null;
+          courier_name?: string | null;
+          tracking_number?: string | null;
+          tracking_url?: string | null;
+          shipped_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -319,9 +349,37 @@ export type Database = {
         };
         Relationships: [];
       };
+      subscribers: {
+        Row: {
+          id: string;
+          email: string;
+          source: string;
+          welcome_email_sent_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          source?: string;
+          welcome_email_sent_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          source?: string;
+          welcome_email_sent_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: { [_ in never]: never };
     Functions: {
+      mark_order_paid: {
+        Args: { p_razorpay_order_id: string; p_payment_id: string; p_amount_paise?: number };
+        Returns: string;
+      };
       is_admin: {
         Args: Record<PropertyKey, never>;
         Returns: boolean;
