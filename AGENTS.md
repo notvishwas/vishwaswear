@@ -18,8 +18,10 @@ Next.js (App Router) + TypeScript (strict) + Tailwind CSS + Supabase (Postgres, 
 
 ## Code rules
 - Clean, small, readable files. One responsibility per file.
+- Repo layout: `frontend/` is the Next.js app (UI and the server-side code that runs inside it); `backend/` holds the Supabase project (migrations, seed).
 - Folder structure:
-  src/app (routes only, thin pages), src/components/{ui,layout,shop,cart,checkout,admin}, src/lib/{supabase,razorpay,resend,utils}, src/actions (server actions), src/types, src/config, src/hooks, supabase/migrations
+  frontend/src/{app (routes only, thin pages), components/{ui,layout,shop,cart,checkout,admin}, lib/{supabase,razorpay,resend,utils,data}, actions (server actions), types, config, hooks}
+  backend/supabase/{migrations, seed.sql}
 - No `any`. Validate all external input with zod.
 - Server-only secrets never reach the client. Use `server-only` for server modules.
 - Money is stored as integers in paise. Format with one shared helper.

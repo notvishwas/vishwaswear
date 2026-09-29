@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="Blazers">
+  <rect width="800" height="1000" fill="#2c3d5a"/>
+  <rect x="40" y="40" width="720" height="920" fill="none" stroke="#e0cba5" stroke-opacity="0.5" stroke-width="2"/>
+  <line x1="120" y1="600" x2="680" y2="600" stroke="#e0cba5" stroke-opacity="0.6" stroke-width="2"/>
+  <text x="400" y="540" text-anchor="middle" font-family="Georgia, serif" font-size="40" fill="#e0cba5">Blazers</text>
+</svg>
