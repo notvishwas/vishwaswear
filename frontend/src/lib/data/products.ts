@@ -87,6 +87,11 @@ export async function getProducts(
   const from = (filters.page - 1) * filters.pageSize;
   const { data, error, count } = await query.range(from, from + filters.pageSize - 1);
 
+  if (error?.code === "PGRST103") {
+    // Page is past the end of the results. Return the real total so callers can redirect.
+    const firstPage = await getProducts({ ...input, page: 1 });
+    return { ...firstPage, items: [], page: filters.page };
+  }
   if (error) throw new Error(`Failed to load products: ${error.message}`);
 
   const total = count ?? 0;

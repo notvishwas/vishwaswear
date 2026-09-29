@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Price } from "@/components/ui/price";
-import { cn } from "@/lib/utils";
+import { cn, isNewProduct, isSoldOut } from "@/lib/utils";
 import type { ProductWithDetails } from "@/types";
 
 const IMAGE_SIZES = "(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw";
@@ -18,6 +18,9 @@ export function ProductCard({ product, priority = false, className }: ProductCar
   const [primary, secondary] = product.images;
   const onSale =
     product.compare_at_price_paise !== null && product.compare_at_price_paise > product.price_paise;
+
+  const soldOut = isSoldOut(product);
+  const isNew = isNewProduct(product.created_at);
 
   return (
     <article className={cn("group relative", className)}>
@@ -42,10 +45,16 @@ export function ProductCard({ product, priority = false, className }: ProductCar
               className="object-cover opacity-0 transition-opacity duration-300 hover:opacity-100 group-hover:opacity-100"
             />
           )}
-          {onSale && (
-            <Badge variant="gold" className="absolute left-2 top-2">
-              Sale
-            </Badge>
+          <div className="absolute left-2 top-2 flex flex-col items-start gap-1">
+            {isNew && <Badge variant="navy">New</Badge>}
+            {onSale && !soldOut && <Badge variant="gold">Sale</Badge>}
+          </div>
+          {soldOut && (
+            <div className="absolute inset-0 flex items-end justify-center bg-cream-100/55 pb-3">
+              <Badge variant="outline" className="bg-cream-100">
+                Sold out
+              </Badge>
+            </div>
           )}
         </div>
 
@@ -55,7 +64,7 @@ export function ProductCard({ product, priority = false, className }: ProductCar
           <Price
             amount={product.price_paise}
             compareAt={product.compare_at_price_paise ?? undefined}
-            className="text-sm sm:text-base"
+            className={cn("text-sm sm:text-base", soldOut && "text-navy-300")}
           />
         </div>
       </Link>

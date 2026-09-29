@@ -8,7 +8,7 @@ export function buildNavLinks(categories: Pick<Category, "name" | "slug">[]): Na
     { label: "Shop", href: "/shop" },
     ...categories.map((category) => ({
       label: category.name,
-      href: `/shop?category=${category.slug}`,
+      href: `/shop/${category.slug}`,
     })),
   ];
 }

@@ -5,7 +5,7 @@ import type { Category } from "@/types";
 export function CategoryCard({ category }: { category: Category }) {
   return (
     <Link
-      href={`/shop?category=${category.slug}`}
+      href={`/shop/${category.slug}`}
       className="group relative block aspect-[4/5] overflow-hidden rounded-md bg-navy-800"
     >
       {category.image_url && (
