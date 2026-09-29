@@ -1,8 +1,8 @@
+import { shippingConfig } from "./shipping";
+
 function optionalUrl(value: string | undefined) {
   return value && value.startsWith("http") ? value : undefined;
 }
-
-const freeShippingThresholdInr = Number(process.env.NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD_INR);
 
 const socialCandidates = [
   { label: "Instagram", href: optionalUrl(process.env.NEXT_PUBLIC_INSTAGRAM_URL) },
@@ -19,11 +19,7 @@ export const siteConfig = {
   locale: "en-IN",
   // SUPPORT_EMAIL is server-only; client bundles fall back to the default.
   supportEmail: process.env.SUPPORT_EMAIL || "support@vishwaswear.com",
-  /** Orders at or above this subtotal ship free. Paise. */
-  freeShippingThresholdPaise:
-    (Number.isFinite(freeShippingThresholdInr) && freeShippingThresholdInr > 0
-      ? freeShippingThresholdInr
-      : 2999) * 100,
+  freeShippingThresholdPaise: shippingConfig.freeShippingThresholdPaise,
   returnWindowDays: 15,
   /** Only the social profiles that have a URL configured. */
   social: socialCandidates.filter(

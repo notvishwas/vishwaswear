@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
+import { JsonLd } from "./json-ld";
 
 export type Crumb = { label: string; href: string };
 
@@ -39,12 +40,7 @@ export function Breadcrumbs({ crumbs }: { crumbs: Crumb[] }) {
           );
         })}
       </ol>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
-        }}
-      />
+      <JsonLd data={structuredData} />
     </nav>
   );
 }

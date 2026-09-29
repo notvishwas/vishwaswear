@@ -24,7 +24,7 @@ export function ProductCard({ product, priority = false, className }: ProductCar
 
   return (
     <article className={cn("group relative", className)}>
-      <Link href={`/products/${product.slug}`} className="block">
+      <Link href={`/product/${product.slug}`} className="block">
         <div className="relative aspect-[4/5] overflow-hidden rounded-md bg-cream-200">
           {primary && (
             <Image

@@ -26,7 +26,6 @@ Keep this table in sync with `frontend/.env.example`.
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_NAME` | public | Brand name, read only via `src/config/site.ts` |
 | `NEXT_PUBLIC_SITE_URL` | public | Canonical site URL |
-| `NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD_INR` | public | Free-shipping threshold in rupees (default 2999) |
 | `NEXT_PUBLIC_INSTAGRAM_URL` / `NEXT_PUBLIC_FACEBOOK_URL` / `NEXT_PUBLIC_YOUTUBE_URL` | public | Optional social links shown in the footer |
 | `RESEND_API_KEY` | server | Resend API key |
 | `EMAIL_FROM` | server | From address for order emails |

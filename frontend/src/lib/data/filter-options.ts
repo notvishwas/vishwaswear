@@ -1,20 +1,12 @@
 import "server-only";
 import { cache } from "react";
+import { compareSizes } from "@/lib/shop/sizes";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export type ShopFilterOptions = {
   sizes: string[];
   colors: string[];
 };
-
-const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
-
-function compareSizes(a: string, b: string) {
-  const rankA = SIZE_ORDER.indexOf(a);
-  const rankB = SIZE_ORDER.indexOf(b);
-  if (rankA !== -1 && rankB !== -1) return rankA - rankB;
-  return a.localeCompare(b, undefined, { numeric: true });
-}
 
 /** Sizes and colours that are currently in stock, optionally within one category. */
 export const getShopFilterOptions = cache(

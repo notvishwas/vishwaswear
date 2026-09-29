@@ -1,15 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { useCartCount } from "@/hooks/use-cart-count";
+import { usePathname } from "next/navigation";
+import { useCartCount } from "@/hooks/use-cart";
+import { openCartDrawer } from "@/lib/cart/drawer";
 import { BagIcon } from "./icons";
 
 export function CartButton() {
   const count = useCartCount();
+  const pathname = usePathname();
 
   return (
     <Link
       href="/cart"
+      onClick={(event) => {
+        // Open the drawer, except on the cart page itself or when opening in a new tab.
+        if (pathname === "/cart" || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+        event.preventDefault();
+        openCartDrawer();
+      }}
       aria-label={count > 0 ? `Cart, ${count} ${count === 1 ? "item" : "items"}` : "Cart, empty"}
       className="relative inline-flex size-11 items-center justify-center rounded-md text-navy-800 hover:bg-navy-800/5"
     >
