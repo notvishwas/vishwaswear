@@ -8,7 +8,7 @@ export function SiteLogo({ className }: { className?: string }) {
       href="/"
       aria-label={`${siteConfig.name} home`}
       className={cn(
-        "text-lg font-extrabold uppercase tracking-[0.22em] text-navy-800 sm:text-xl",
+        "text-base font-extrabold uppercase tracking-[0.18em] text-navy-800 sm:text-xl sm:tracking-[0.22em]",
         className,
       )}
     >

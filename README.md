@@ -74,3 +74,20 @@ Notes:
 
 If a customer pays for the last unit at the same moment someone else does, the second order stays `pending_payment` with
 `payment_issue = 'insufficient_stock'` and needs a manual refund from the Razorpay dashboard.
+
+## Google sign-in
+
+Sign-in uses Supabase Auth with the Google provider. Shoppers can still check out as guests.
+
+1. **Google Cloud Console** (console.cloud.google.com): create a project, then APIs & Services > OAuth consent screen (External; add your app name and support email).
+   Then Credentials > Create credentials > OAuth client ID > Web application.
+   - Authorised redirect URI: `https://<your-project-ref>.supabase.co/auth/v1/callback`
+   - Copy the client ID and client secret.
+2. **Supabase dashboard**: Authentication > Providers > Google. Enable it and paste the client ID and secret.
+3. **Supabase dashboard**: Authentication > URL Configuration.
+   - Site URL: your production URL (for example `https://vishwaswear.com`).
+   - Redirect URLs: add `http://localhost:3000/auth/callback` and `https://<your-domain>/auth/callback`.
+4. Restart the dev server and open `/login`.
+
+Each Google user gets a `profiles` row automatically. Orders placed while signed in are stored against the user, and when someone
+signs in, earlier guest orders with the same verified email are attached to their account. Their orders appear at `/account`.

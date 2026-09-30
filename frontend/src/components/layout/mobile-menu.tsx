@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { CloseIcon, MenuIcon } from "./icons";
 import type { NavLink } from "./nav-links";
 
-export function MobileMenu({ links }: { links: NavLink[] }) {
+export function MobileMenu({ links, accountLinks }: { links: NavLink[]; accountLinks: NavLink[] }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
 
         <nav aria-label="Main" className="flex-1 overflow-y-auto px-4 py-4">
           <ul className="flex flex-col">
-            {links.map((link) => (
+            {[...links, ...accountLinks].map((link) => (
               <li key={link.href} className="border-b border-cream-300">
                 <Link
                   href={link.href}

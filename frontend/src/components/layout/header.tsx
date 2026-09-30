@@ -1,18 +1,24 @@
 import Link from "next/link";
+import { AccountLink } from "./account-link";
 import { CartButton } from "./cart-button";
 import { SearchIcon } from "./icons";
+import { getCurrentUser } from "@/lib/auth/user";
 import { loadNavCategories } from "./load-categories";
 import { MobileMenu } from "./mobile-menu";
 import { buildNavLinks } from "./nav-links";
 import { SiteLogo } from "./site-logo";
 
 export async function Header() {
-  const links = buildNavLinks(await loadNavCategories());
+  const [categories, user] = await Promise.all([loadNavCategories(), getCurrentUser()]);
+  const links = buildNavLinks(categories);
+  const accountLinks = user
+    ? [{ label: "Your account", href: "/account" }]
+    : [{ label: "Sign in", href: "/login" }];
 
   return (
     <header className="sticky top-0 z-40 border-b border-cream-300 bg-cream-100/95 backdrop-blur supports-[backdrop-filter]:bg-cream-100/85">
       <div className="mx-auto grid h-16 w-full max-w-page grid-cols-[1fr_auto_1fr] items-center gap-2 px-2 sm:px-4 lg:flex lg:justify-between lg:px-8">
-        <MobileMenu links={links} />
+        <MobileMenu links={links} accountLinks={accountLinks} />
 
         <SiteLogo className="justify-self-center lg:flex-1" />
 
@@ -40,6 +46,7 @@ export async function Header() {
           >
             <SearchIcon />
           </button>
+          <AccountLink />
           <CartButton />
         </div>
       </div>

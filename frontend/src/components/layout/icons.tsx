@@ -51,3 +51,12 @@ export function BagIcon(props: ComponentProps<"svg">) {
     </Icon>
   );
 }
+
+export function UserIcon(props: ComponentProps<"svg">) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="8.5" r="3.5" />
+      <path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5" />
+    </Icon>
+  );
+}

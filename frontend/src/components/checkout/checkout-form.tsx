@@ -37,7 +37,13 @@ type Notice = {
   retryVerification?: RazorpaySuccessResponse;
 };
 
-export function CheckoutForm() {
+type CheckoutFormProps = {
+  defaultEmail: string;
+  defaultName: string;
+  signedIn: boolean;
+};
+
+export function CheckoutForm({ defaultEmail, defaultName, signedIn }: CheckoutFormProps) {
   const router = useRouter();
   const lines = useCartLines();
   const subtotal = useCartSubtotal();
@@ -58,7 +64,7 @@ export function CheckoutForm() {
   } = useForm<CheckoutFormInput, unknown, CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
     mode: "onTouched",
-    defaultValues: { email: "", phone: "", fullName: "", addressLine1: "", addressLine2: "", city: "", state: undefined, pincode: "", landmark: "" },
+    defaultValues: { email: defaultEmail, phone: "", fullName: defaultName, addressLine1: "", addressLine2: "", city: "", state: undefined, pincode: "", landmark: "" },
   });
 
   function release() {
@@ -265,6 +271,15 @@ export function CheckoutForm() {
 
         <fieldset disabled={busy} className="flex flex-col gap-4">
           <legend className="mb-1 text-lg font-semibold text-navy-800">Contact</legend>
+          {!signedIn && (
+            <p className="text-sm text-navy-500">
+              Have an account?{" "}
+              <Link href="/login?next=/checkout" className="font-semibold text-navy-800 underline underline-offset-4">
+                Sign in with Google
+              </Link>{" "}
+              to save this order to your account, or continue as a guest.
+            </p>
+          )}
           <Input
             id="email"
             label="Email"

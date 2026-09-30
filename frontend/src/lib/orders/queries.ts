@@ -47,3 +47,18 @@ export function normalizeOrderNumber(input: string): string {
   const cleaned = input.trim().toUpperCase().replace(/\s+/g, "");
   return /^\d+$/.test(cleaned) ? `ORD-${cleaned}` : cleaned;
 }
+
+/** A signed-in user's orders, newest first. Unpaid checkouts are left out. */
+export async function getOrdersForUser(userId: string): Promise<OrderWithItems[]> {
+  const admin = createAdminSupabaseClient();
+  const { data, error } = await admin
+    .from("orders")
+    .select("*, items:order_items(*)")
+    .eq("user_id", userId)
+    .neq("status", "pending_payment")
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (error) throw new Error(`Failed to load orders: ${error.message}`);
+  return data;
+}
