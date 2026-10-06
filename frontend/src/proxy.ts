@@ -8,7 +8,16 @@ import { getPublicSupabaseEnv } from "@/lib/supabase/env";
  */
 export async function proxy(request: NextRequest) {
   const hasSession = request.cookies.getAll().some((cookie) => cookie.name.startsWith("sb-"));
-  if (!hasSession) return NextResponse.next();
+  const { pathname } = request.nextUrl;
+
+  // First gate for the admin area: no session means no admin. The role itself is checked on the
+  // server by requireAdmin(), because a cookie alone proves nothing about who someone is.
+  const isProtectedAdminRoute = pathname.startsWith("/admin") && pathname !== "/admin/login";
+  if (!hasSession) {
+    return isProtectedAdminRoute
+      ? NextResponse.redirect(new URL("/admin/login", request.url))
+      : NextResponse.next();
+  }
 
   let response = NextResponse.next({ request });
   const { url, anonKey } = getPublicSupabaseEnv();

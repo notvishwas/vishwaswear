@@ -51,8 +51,7 @@ Schema lives in `backend/supabase/migrations`, seed data in `backend/supabase/se
    - **CLI** (run from `backend/`): `npx supabase init` (once), `npx supabase login`, `npx supabase link --project-ref <ref>`, then `npx supabase db push`.
 3. Load the catalog: paste `backend/supabase/seed.sql` into the SQL editor and run it. It is safe to run again.
 4. Start the app and open `/catalog-check` to confirm categories and products load (temporary page; delete it once the shop pages exist).
-5. Make yourself an admin: sign up, then in the SQL editor run
-   `update public.profiles set role = 'admin' where id = (select id from auth.users where email = 'you@example.com');`
+5. Make an admin user: see [Admin area](#admin-area).
 
 Notes:
 
@@ -91,3 +90,29 @@ Sign-in uses Supabase Auth with the Google provider. Shoppers can still check ou
 
 Each Google user gets a `profiles` row automatically. Orders placed while signed in are stored against the user, and when someone
 signs in, earlier guest orders with the same verified email are attached to their account. Their orders appear at `/account`.
+
+## Admin area
+
+The admin panel lives at `/admin` and is only for accounts whose `profiles.role` is `admin`. Visitors without a session are
+redirected by the proxy; signed-in users are also checked against the database on every admin page, so a customer account
+can never reach it.
+
+1. Run `backend/supabase/migrations/20250101000600_admin_dashboard.sql` (adds the `admin_dashboard_stats` function).
+2. **Create the first admin user.** In the Supabase dashboard open Authentication > Users > Add user > Create new user, enter an
+   email and a password, and tick Auto Confirm User. (A trigger gives every new user a `profiles` row with the `customer` role.)
+3. **Make that user an admin.** In the SQL editor run (using the same email):
+
+   ```sql
+   update public.profiles
+   set role = admin
+   where id = (select id from auth.users where email = you@example.com);
+   ```
+
+4. Sign in at `/admin/login` with that email and password. To demote someone later, set `role = customer`.
+
+Dashboard numbers are computed in Postgres. A "paid order" means status `paid`, `processing`, `shipped` or `delivered`; cancelled,
+refunded and unpaid orders are not counted. "Today" and "this month" use Indian Standard Time. Low stock counts variants of active
+products with 5 or fewer units (`LOW_STOCK_THRESHOLD` in `src/lib/shop/variants.ts`).
+
+To add an admin page, create it under `src/app/admin/(panel)/`, call `requireAdmin()` at the top of the page and of every data
+function (use `getAdminDb()` for queries), and add it to `src/components/admin/nav-items.ts`.

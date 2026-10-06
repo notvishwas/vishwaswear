@@ -376,6 +376,10 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
+      admin_dashboard_stats: {
+        Args: { p_low_stock_threshold?: number };
+        Returns: Json;
+      };
       mark_order_paid: {
         Args: { p_razorpay_order_id: string; p_payment_id: string; p_amount_paise?: number };
         Returns: string;
