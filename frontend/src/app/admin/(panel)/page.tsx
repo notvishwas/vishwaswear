@@ -14,7 +14,15 @@ import { formatPrice } from "@/lib/utils";
 export const metadata: Metadata = { title: "Dashboard" };
 
 const recentOrderColumns: Column<RecentOrder>[] = [
-  { key: "order_number", header: "Order", cell: (order) => <span className="font-semibold">{order.order_number}</span> },
+  {
+    key: "order_number",
+    header: "Order",
+    cell: (order) => (
+      <Link href={`/admin/orders/${order.id}`} className="font-semibold underline-offset-4 hover:underline">
+        {order.order_number}
+      </Link>
+    ),
+  },
   { key: "email", header: "Customer", cell: (order) => order.email },
   { key: "created_at", header: "Placed", cell: (order) => formatDateTime(order.created_at) },
   { key: "status", header: "Status", cell: (order) => <StatusBadge status={order.status} /> },

@@ -1,20 +1,21 @@
 import type { Metadata } from "next";
-import { EmptyState } from "@/components/admin/empty-state";
+import { CategoryManager } from "@/components/admin/category-manager";
 import { PageHeader } from "@/components/admin/page-header";
+import { listCategoriesWithCounts } from "@/lib/admin/categories";
 import { requireAdmin } from "@/lib/auth/admin";
 
 export const metadata: Metadata = { title: "Categories" };
 
 export default async function AdminCategoriesPage() {
   await requireAdmin();
+  const categories = await listCategoriesWithCounts();
 
   return (
     <>
-      <PageHeader title="Categories" description="Organise the catalogue." />
-      <EmptyState
-        title="Category management is the next admin task"
-        description="Adding, ordering and editing categories will live here."
-      />
+      <PageHeader title="Categories" description="The order here is the order shown in the shop menu." />
+      <div className="max-w-3xl">
+        <CategoryManager categories={categories} />
+      </div>
     </>
   );
 }

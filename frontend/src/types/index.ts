@@ -11,6 +11,7 @@ export type ProductImage = Tables["product_images"]["Row"];
 export type ProductVariant = Tables["product_variants"]["Row"];
 export type Order = Tables["orders"]["Row"];
 export type OrderItem = Tables["order_items"]["Row"];
+export type OrderEvent = Tables["order_events"]["Row"];
 export type Profile = Tables["profiles"]["Row"];
 
 export type OrderStatus = Enums["order_status"];

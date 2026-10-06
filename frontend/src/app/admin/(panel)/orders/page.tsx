@@ -20,7 +20,12 @@ import type { OrderStatus } from "@/types";
 export const metadata: Metadata = { title: "Orders" };
 
 const columns: Column<AdminOrderRow>[] = [
-  { key: "order_number", header: "Order", sortable: true, cell: (order) => <span className="font-semibold">{order.order_number}</span> },
+  { key: "order_number", header: "Order", sortable: true, cell: (order) => (
+      <Link href={`/admin/orders/${order.id}`} className="font-semibold underline-offset-4 hover:underline">
+        {order.order_number}
+      </Link>
+    ),
+  },
   { key: "email", header: "Customer", cell: (order) => order.email },
   { key: "created_at", header: "Placed", sortable: true, cell: (order) => formatDateTime(order.created_at) },
   { key: "status", header: "Status", sortable: true, cell: (order) => <StatusBadge status={order.status} /> },

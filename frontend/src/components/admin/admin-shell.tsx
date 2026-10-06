@@ -4,6 +4,7 @@ import { siteConfig } from "@/config/site";
 import { requireAdmin } from "@/lib/auth/admin";
 import { AdminMobileNav } from "./admin-mobile-nav";
 import { AdminNavLinks } from "./admin-nav-links";
+import { ToastProvider } from "./toast";
 
 /** Admin chrome: navy sidebar (a drawer on mobile), top bar with the site name and signed-in admin. */
 export async function AdminShell({ children }: { children: ReactNode }) {
@@ -47,7 +48,7 @@ export async function AdminShell({ children }: { children: ReactNode }) {
         </header>
 
         <main id="admin-main" className="flex-1 p-4 sm:p-6 lg:p-8">
-          {children}
+          <ToastProvider>{children}</ToastProvider>
         </main>
       </div>
     </div>

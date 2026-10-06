@@ -10,11 +10,11 @@ type ConfirmDialogProps = {
   title: string;
   description: string;
   confirmLabel?: string;
-  /** A server action to run on confirm. It receives the hidden `fields` as form data. */
-  action: (formData: FormData) => void | Promise<void>;
-  fields?: Record<string, string>;
+  /** Runs when the admin confirms. The dialog stays open (with a spinner) until it finishes. */
+  onConfirm: () => void | Promise<void>;
   destructive?: boolean;
   triggerClassName?: string;
+  triggerDisabled?: boolean;
 };
 
 /** Asks before doing something that is hard to undo, such as cancelling an order or deleting a product. */
@@ -23,12 +23,13 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel = "Confirm",
-  action,
-  fields = {},
+  onConfirm,
   destructive = false,
   triggerClassName,
+  triggerDisabled = false,
 }: ConfirmDialogProps) {
   const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -38,9 +39,19 @@ export function ConfirmDialog({
     if (!open && dialog.open) dialog.close();
   }, [open]);
 
+  async function confirm() {
+    setPending(true);
+    try {
+      await onConfirm();
+    } finally {
+      setPending(false);
+      setOpen(false);
+    }
+  }
+
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className={triggerClassName}>
+      <button type="button" disabled={triggerDisabled} onClick={() => setOpen(true)} className={triggerClassName}>
         {trigger}
       </button>
 
@@ -48,7 +59,7 @@ export function ConfirmDialog({
         ref={dialogRef}
         onClose={() => setOpen(false)}
         onClick={(event) => {
-          if (event.target === dialogRef.current) setOpen(false);
+          if (event.target === dialogRef.current && !pending) setOpen(false);
         }}
         aria-labelledby="confirm-title"
         aria-describedby="confirm-description"
@@ -61,17 +72,19 @@ export function ConfirmDialog({
           {description}
         </p>
 
-        <form action={action} className="mt-6 flex justify-end gap-3">
-          {Object.entries(fields).map(([name, value]) => (
-            <input key={name} type="hidden" name={name} value={value} />
-          ))}
-          <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
+        <div className="mt-6 flex justify-end gap-3">
+          <Button type="button" variant="secondary" disabled={pending} onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button type="submit" className={cn(destructive && "border-red-700 bg-red-700 hover:bg-red-800")}>
+          <Button
+            type="button"
+            loading={pending}
+            onClick={() => void confirm()}
+            className={cn(destructive && "border-red-700 bg-red-700 hover:bg-red-800")}
+          >
             {confirmLabel}
           </Button>
-        </form>
+        </div>
       </dialog>
     </>
   );

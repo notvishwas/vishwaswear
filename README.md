@@ -97,7 +97,8 @@ The admin panel lives at `/admin` and is only for accounts whose `profiles.role`
 redirected by the proxy; signed-in users are also checked against the database on every admin page, so a customer account
 can never reach it.
 
-1. Run `backend/supabase/migrations/20250101000600_admin_dashboard.sql` (adds the `admin_dashboard_stats` function).
+1. Run `backend/supabase/migrations/20250101000600_admin_dashboard.sql` (dashboard numbers) and `20250101000700_admin_management.sql`
+   (order timeline, status changes with stock restore, product saves, customer list).
 2. **Create the first admin user.** In the Supabase dashboard open Authentication > Users > Add user > Create new user, enter an
    email and a password, and tick Auto Confirm User. (A trigger gives every new user a `profiles` row with the `customer` role.)
 3. **Make that user an admin.** In the SQL editor run (using the same email):
@@ -116,3 +117,17 @@ products with 5 or fewer units (`LOW_STOCK_THRESHOLD` in `src/lib/shop/variants.
 
 To add an admin page, create it under `src/app/admin/(panel)/`, call `requireAdmin()` at the top of the page and of every data
 function (use `getAdminDb()` for queries), and add it to `src/components/admin/nav-items.ts`.
+
+### What the admin can do
+
+- **Orders** (`/admin/orders`): search by order number or email, filter by status, sort and page. The detail page shows items, customer,
+  address, payment details and a timeline. Allowed moves: paid > processing > shipped > delivered, and cancel or refund before
+  delivery. Marking an order shipped asks for the courier (tracking number and link are optional) and emails the customer once.
+  Cancelling or refunding restores stock in the same database transaction, at most once. Refund the money itself in Razorpay.
+- **Products**: table with image, category, price, total stock and a visibility switch; add and edit with auto slug, images (uploaded to the
+  `product-images` bucket, drag or use arrows to reorder, alt text, delete) and a variants editor. Deleting a product that appears in past
+  orders archives it (hides it) instead.
+- **Categories**: create, edit, reorder and delete. A category that still has products cannot be deleted.
+- **Customers**: read-only, derived from paid orders and grouped by email.
+
+Every admin mutation is a server action that re-checks the admin role before doing anything.

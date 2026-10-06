@@ -1,6 +1,6 @@
 import "server-only";
 import { getAdminDb } from "@/lib/auth/admin";
-import type { Order, OrderStatus, Paginated } from "@/types";
+import type { Order, OrderEvent, OrderItem, OrderStatus, Paginated } from "@/types";
 import { sanitizeSearch, type TableQuery } from "./table";
 
 export const ORDER_SORT_KEYS = ["created_at", "order_number", "status", "total_paise"] as const;
@@ -22,6 +22,21 @@ export type AdminOrderRow = Pick<
 >;
 
 const PAGE_SIZE = 15;
+
+export type OrderDetail = Order & { items: OrderItem[]; events: OrderEvent[] };
+
+export async function getOrderDetail(id: string): Promise<OrderDetail | null> {
+  const db = await getAdminDb();
+  const { data, error } = await db
+    .from("orders")
+    .select("*, items:order_items(*), events:order_events(*)")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) throw new Error(`Failed to load order: ${error.message}`);
+  if (!data) return null;
+  return { ...data, events: [...data.events].sort((a, b) => a.created_at.localeCompare(b.created_at)) };
+}
 
 export async function listOrders(
   query: TableQuery<OrderSortKey>,

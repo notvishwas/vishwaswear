@@ -45,6 +45,41 @@ export type Database = {
         };
         Relationships: [];
       };
+      order_events: {
+        Row: {
+          id: string;
+          order_id: string;
+          status: Database["public"]["Enums"]["order_status"];
+          note: string | null;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          status: Database["public"]["Enums"]["order_status"];
+          note?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          status?: Database["public"]["Enums"]["order_status"];
+          note?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "order_events_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       order_items: {
         Row: {
           id: string;
@@ -376,6 +411,25 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
+      admin_update_order_status: {
+        Args: {
+          p_order_id: string;
+          p_status: Database["public"]["Enums"]["order_status"];
+          p_admin_id?: string;
+          p_courier_name?: string;
+          p_tracking_number?: string;
+          p_tracking_url?: string;
+        };
+        Returns: string;
+      };
+      admin_save_product: {
+        Args: { p_id: string | null; p_product: Json; p_variants: Json; p_images: Json };
+        Returns: string;
+      };
+      admin_list_customers: {
+        Args: { p_search?: string; p_sort?: string; p_dir?: string; p_limit?: number; p_offset?: number };
+        Returns: Json;
+      };
       admin_dashboard_stats: {
         Args: { p_low_stock_threshold?: number };
         Returns: Json;
