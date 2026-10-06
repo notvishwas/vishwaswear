@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export const controlClasses =
-  "w-full rounded-md border border-navy-200 bg-white px-3 text-navy-800 placeholder:text-navy-300 " +
+  "w-full rounded-md border border-navy-200 bg-white px-3 text-navy-800 placeholder:text-navy-400 " +
   "focus-visible:border-gold-500 disabled:cursor-not-allowed disabled:bg-cream-200 disabled:opacity-70 " +
   "aria-[invalid=true]:border-red-700";
 

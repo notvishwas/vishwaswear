@@ -36,5 +36,3 @@ export const INDIAN_STATES = [
   "Uttarakhand",
   "West Bengal",
 ] as const;
-
-export type IndianState = (typeof INDIAN_STATES)[number];

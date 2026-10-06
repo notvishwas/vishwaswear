@@ -1,10 +1,30 @@
-import { z } from "zod";
 import { MAX_QUANTITY_PER_LINE } from "@/lib/shop/variants";
-import { cartLineSchema, type CartLine, type ValidatedCart } from "@/types/cart";
+import type { CartLine, ValidatedCart } from "@/types/cart";
 
 // Bump the version when the stored shape changes; older carts are then ignored.
 const STORAGE_KEY = "cart:v2";
-const cartLinesSchema = z.array(cartLineSchema);
+
+const isText = (value: unknown): value is string => typeof value === "string" && value.length > 0;
+const isCount = (value: unknown): value is number => typeof value === "number" && Number.isInteger(value) && value >= 0;
+
+/** Checks stored data by hand instead of with zod, which keeps a large library out of every page. */
+function isCartLine(value: unknown): value is CartLine {
+  if (typeof value !== "object" || value === null) return false;
+  const line = value as Record<string, unknown>;
+  return (
+    isText(line.variantId) &&
+    isText(line.productId) &&
+    isText(line.slug) &&
+    isText(line.name) &&
+    isText(line.size) &&
+    isText(line.color) &&
+    (line.image === null || typeof line.image === "string") &&
+    isCount(line.unitPricePaise) &&
+    isCount(line.quantity) &&
+    line.quantity > 0 &&
+    isCount(line.stock)
+  );
+}
 
 const EMPTY: CartLine[] = [];
 const listeners = new Set<() => void>();
@@ -33,8 +53,8 @@ export function getCartLines(): CartLine[] {
   let lines = EMPTY;
   if (raw) {
     try {
-      const parsed = cartLinesSchema.safeParse(JSON.parse(raw));
-      if (parsed.success) lines = parsed.data;
+      const parsed: unknown = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.every(isCartLine)) lines = parsed;
     } catch {
       // Corrupt data is treated as an empty cart.
     }
@@ -116,10 +136,6 @@ export function applyValidatedCart(result: Extract<ValidatedCart, { ok: true }>)
   });
 
   writeCartLines(next);
-}
-
-export function getCartCount(): number {
-  return getCartLines().reduce((sum, line) => sum + line.quantity, 0);
 }
 
 export function getCartSubtotal(lines: CartLine[]): number {

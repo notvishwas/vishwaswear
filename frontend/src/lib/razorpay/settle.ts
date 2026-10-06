@@ -1,5 +1,6 @@
 import "server-only";
 import { after } from "next/server";
+import { revalidateStorefront } from "@/lib/revalidate";
 import { sendOrderPaidEmails } from "@/lib/orders/emails";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
@@ -43,6 +44,9 @@ export async function settleOrderPayment(params: {
   if (!result) throw new Error(`mark_order_paid returned an unexpected value: ${String(data)}`);
   // Emails run after the response so they can never slow down or break payment handling. The
   // per-email claim in the database keeps them to one send even if this runs several times.
+  // New stock levels should show on cached product pages straight away.
+  if (result === "paid") revalidateStorefront();
+
   if (result === "paid" || result === "already_paid") {
     after(() => sendOrderPaidEmails(params.razorpayOrderId));
   }

@@ -1,5 +1,6 @@
 import "server-only";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { cache } from "react";
+import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import type { Paginated, ProductWithDetails } from "@/types";
 import { productFiltersSchema, type ProductFiltersInput } from "./product-filters";
 
@@ -28,7 +29,7 @@ function sanitizeSearch(value: string): string {
 
 /** Product ids that have an in-stock variant matching the size and/or colour. */
 async function findProductIdsByVariant(size?: string, color?: string): Promise<string[]> {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   let query = supabase.from("product_variants").select("product_id").gt("stock", 0);
   if (size) query = query.eq("size", size);
   if (color) query = query.ilike("color", sanitizeSearch(color));
@@ -42,7 +43,7 @@ export async function getProducts(
   input: ProductFiltersInput = {},
 ): Promise<Paginated<ProductWithDetails>> {
   const filters = productFiltersSchema.parse(input);
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
 
   let variantProductIds: string[] | null = null;
   if (filters.size || filters.color) {
@@ -104,8 +105,8 @@ export async function getProducts(
   };
 }
 
-export async function getProductBySlug(slug: string): Promise<ProductWithDetails | null> {
-  const supabase = await createServerSupabaseClient();
+export const getProductBySlug = cache(async (slug: string): Promise<ProductWithDetails | null> => {
+  const supabase = createPublicSupabaseClient();
   const { data, error } = await supabase
     .from("products")
     .select(PRODUCT_SELECT)
@@ -115,7 +116,7 @@ export async function getProductBySlug(slug: string): Promise<ProductWithDetails
 
   if (error) throw new Error(`Failed to load product: ${error.message}`);
   return data ? normalize(data) : null;
-}
+});
 
 export async function getFeaturedProducts(limit = 8): Promise<ProductWithDetails[]> {
   const { items } = await getProducts({ featured: true, sort: "newest", pageSize: limit });
@@ -127,7 +128,7 @@ export async function getRelatedProducts(
   product: Pick<ProductWithDetails, "id" | "category_id">,
   limit = 4,
 ): Promise<ProductWithDetails[]> {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   const { data, error } = await supabase
     .from("products")
     .select(PRODUCT_SELECT)

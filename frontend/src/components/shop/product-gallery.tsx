@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CloseIcon } from "@/components/layout/icons";
+import { BLUR_DATA_URL } from "@/lib/shop/images";
 import { cn } from "@/lib/utils";
 import type { ProductImage } from "@/types";
 
@@ -106,6 +107,8 @@ export function ProductGallery({ images, productName }: { images: GalleryImage[]
                     fill
                     sizes="(min-width: 640px) 60vw, 100vw"
                     priority={index === 0}
+                    placeholder="blur"
+                    blurDataURL={BLUR_DATA_URL}
                     className="object-cover"
                   />
                 </button>
@@ -137,6 +140,8 @@ export function ProductGallery({ images, productName }: { images: GalleryImage[]
             fill
             sizes="(min-width: 1280px) 40vw, 45vw"
             loading="eager"
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
             className="object-cover"
           />
         </button>

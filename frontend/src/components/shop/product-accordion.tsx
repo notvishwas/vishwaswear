@@ -9,10 +9,10 @@ function Item({ title, children }: { title: string; children: ReactNode }) {
     <details name="product-info" className="group border-b border-cream-300">
       <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between text-sm font-semibold text-navy-800 marker:hidden [&::-webkit-details-marker]:hidden">
         {title}
-        <span aria-hidden="true" className="text-xl font-normal text-gold-600 group-open:hidden">
+        <span aria-hidden="true" className="text-xl font-normal text-gold-700 group-open:hidden">
           +
         </span>
-        <span aria-hidden="true" className="hidden text-xl font-normal text-gold-600 group-open:inline">
+        <span aria-hidden="true" className="hidden text-xl font-normal text-gold-700 group-open:inline">
           −
         </span>
       </summary>

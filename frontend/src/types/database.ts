@@ -411,6 +411,10 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
+      check_rate_limit: {
+        Args: { p_key: string; p_limit: number; p_window_seconds: number };
+        Returns: boolean;
+      };
       admin_update_order_status: {
         Args: {
           p_order_id: string;

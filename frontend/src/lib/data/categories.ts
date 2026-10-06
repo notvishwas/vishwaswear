@@ -1,9 +1,10 @@
 import "server-only";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { cache } from "react";
+import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import type { Category } from "@/types";
 
-export async function getCategories(): Promise<Category[]> {
-  const supabase = await createServerSupabaseClient();
+export const getCategories = cache(async (): Promise<Category[]> => {
+  const supabase = createPublicSupabaseClient();
   const { data, error } = await supabase
     .from("categories")
     .select("*")
@@ -12,10 +13,10 @@ export async function getCategories(): Promise<Category[]> {
 
   if (error) throw new Error(`Failed to load categories: ${error.message}`);
   return data;
-}
+});
 
-export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  const supabase = await createServerSupabaseClient();
+export const getCategoryBySlug = cache(async (slug: string): Promise<Category | null> => {
+  const supabase = createPublicSupabaseClient();
   const { data, error } = await supabase
     .from("categories")
     .select("*")
@@ -24,4 +25,4 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 
   if (error) throw new Error(`Failed to load category: ${error.message}`);
   return data;
-}
+});

@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { CloseIcon } from "@/components/layout/icons";
 import { Button } from "@/components/ui/button";
 import { useCartDrawerOpen, useCartLines, useCartSubtotal } from "@/hooks/use-cart";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { useCartSync } from "@/hooks/use-cart-sync";
 import { closeCartDrawer } from "@/lib/cart/drawer";
 import { cn } from "@/lib/utils";
@@ -14,6 +15,8 @@ import { CartWarnings } from "./cart-warnings";
 
 export function CartDrawer() {
   const open = useCartDrawerOpen();
+  const panelRef = useRef<HTMLElement>(null);
+  useFocusTrap(open, panelRef);
   const lines = useCartLines() ?? [];
   const subtotal = useCartSubtotal();
   const { status, warnings, error, proceedToCheckout, dismissWarnings } = useCartSync();
@@ -46,6 +49,7 @@ export function CartDrawer() {
       />
 
       <aside
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label="Shopping cart"

@@ -5,6 +5,7 @@ import { after } from "next/server";
 import { z } from "zod";
 import { failure, success, type ActionResult } from "@/lib/admin/action-result";
 import { requireAdmin } from "@/lib/auth/admin";
+import { revalidateStorefront } from "@/lib/revalidate";
 import { sendOrderShippedEmail } from "@/lib/orders/emails";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
@@ -68,6 +69,8 @@ export async function updateOrderStatus(input: UpdateOrderStatusInput): Promise<
   }
 
   revalidatePath("/admin", "layout");
+  // Cancelling or refunding puts stock back on sale.
+  if (status === "cancelled" || status === "refunded") revalidateStorefront();
 
   const messages: Record<string, string> = {
     processing: "Order marked as processing.",

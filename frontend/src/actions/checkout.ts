@@ -9,6 +9,7 @@ import { getRazorpayEnv } from "@/lib/razorpay/env";
 import { settleOrderPayment } from "@/lib/razorpay/settle";
 import { verifyCheckoutSignature } from "@/lib/razorpay/signature";
 import { getConfirmationPath } from "@/lib/orders/token";
+import { isWithinRateLimit, RATE_LIMIT_MESSAGE } from "@/lib/security/rate-limit";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { ValidatedCart } from "@/types/cart";
@@ -71,6 +72,10 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
   const parsed = createOrderSchema.safeParse(input);
   if (!parsed.success) return fail("invalid_input", "Please check your details and try again.");
   const { items, idempotencyKey, ...form } = parsed.data;
+
+  if (!(await isWithinRateLimit({ scope: "create-order", limit: 15, windowSeconds: 600 }))) {
+    return fail("server_error", RATE_LIMIT_MESSAGE);
+  }
 
   try {
     const validated = await validateCartItems(items);
@@ -245,6 +250,9 @@ export async function verifyPayment(input: z.input<typeof verifyPaymentSchema>):
   const parsed = verifyPaymentSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, code: "invalid_signature", message: "We couldn't verify this payment." };
+  }
+  if (!(await isWithinRateLimit({ scope: "verify-payment", limit: 40, windowSeconds: 600 }))) {
+    return { ok: false, code: "server_error", message: RATE_LIMIT_MESSAGE };
   }
   const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = parsed.data;
 

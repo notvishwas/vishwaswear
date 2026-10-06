@@ -1,21 +1,17 @@
-import { z } from "zod";
-
 /** One line in the client-side cart. Prices here are display values; the server re-checks them. */
-export const cartLineSchema = z.object({
-  variantId: z.string().min(1),
-  productId: z.string().min(1),
-  slug: z.string().min(1),
-  name: z.string().min(1),
-  size: z.string().min(1),
-  color: z.string().min(1),
-  image: z.string().nullable(),
-  unitPricePaise: z.number().int().nonnegative(),
-  quantity: z.number().int().positive(),
+export type CartLine = {
+  variantId: string;
+  productId: string;
+  slug: string;
+  name: string;
+  size: string;
+  color: string;
+  image: string | null;
+  unitPricePaise: number;
+  quantity: number;
   /** Units available when the line was last validated; caps the quantity. */
-  stock: z.number().int().nonnegative(),
-});
-
-export type CartLine = z.infer<typeof cartLineSchema>;
+  stock: number;
+};
 
 export type CartWarningKind = "price_changed" | "out_of_stock" | "quantity_reduced" | "unavailable";
 

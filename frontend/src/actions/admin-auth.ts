@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { isWithinRateLimit, RATE_LIMIT_MESSAGE } from "@/lib/security/rate-limit";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 const loginSchema = z.object({
@@ -17,6 +18,10 @@ export async function adminSignIn(_previous: AdminLoginState, formData: FormData
   const parsed = loginSchema.safeParse({ email, password: String(formData.get("password") ?? "") });
   if (!parsed.success) {
     return { status: "error", message: parsed.error.issues[0]?.message ?? "Check your details", email };
+  }
+
+  if (!(await isWithinRateLimit({ scope: "admin-login", limit: 10, windowSeconds: 600 }))) {
+    return { status: "error", message: RATE_LIMIT_MESSAGE, email };
   }
 
   const supabase = await createServerSupabaseClient();

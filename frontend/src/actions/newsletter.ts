@@ -2,6 +2,7 @@
 
 import { after } from "next/server";
 import { z } from "zod";
+import { isWithinRateLimit, RATE_LIMIT_MESSAGE } from "@/lib/security/rate-limit";
 import { sendEmail } from "@/lib/resend/send";
 import { WelcomeEmail } from "@/lib/resend/templates/welcome";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
@@ -39,6 +40,10 @@ export async function subscribeToNewsletter(_previous: SubscribeState, formData:
   const parsed = subscribeSchema.safeParse({ email: String(formData.get("email") ?? "") });
   if (!parsed.success) {
     return { status: "error", message: parsed.error.issues[0]?.message ?? "Enter a valid email address" };
+  }
+
+  if (!(await isWithinRateLimit({ scope: "newsletter", limit: 5, windowSeconds: 3600 }))) {
+    return { status: "error", message: RATE_LIMIT_MESSAGE };
   }
 
   try {

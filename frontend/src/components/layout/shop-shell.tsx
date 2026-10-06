@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { OrganizationJsonLd } from "@/components/shop/organization-json-ld";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { Footer } from "./footer";
 import { Header } from "./header";
@@ -13,6 +14,7 @@ export function ShopShell({ children }: { children: ReactNode }) {
       >
         Skip to content
       </a>
+      <OrganizationJsonLd />
       <Header />
       <main id="main" className="flex-1">
         {children}

@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { compareSizes } from "@/lib/shop/sizes";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createPublicSupabaseClient } from "@/lib/supabase/public";
 
 export type ShopFilterOptions = {
   sizes: string[];
@@ -11,7 +11,7 @@ export type ShopFilterOptions = {
 /** Sizes and colours that are currently in stock, optionally within one category. */
 export const getShopFilterOptions = cache(
   async (categorySlug?: string): Promise<ShopFilterOptions> => {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createPublicSupabaseClient();
     let query = supabase
       .from("product_variants")
       .select("size, color, product:products!inner(is_active, category:categories!inner(slug))")

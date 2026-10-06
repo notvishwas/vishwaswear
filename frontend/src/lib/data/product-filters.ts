@@ -19,4 +19,3 @@ export const productFiltersSchema = z.object({
 });
 
 export type ProductFiltersInput = z.input<typeof productFiltersSchema>;
-export type ProductFilters = z.output<typeof productFiltersSchema>;

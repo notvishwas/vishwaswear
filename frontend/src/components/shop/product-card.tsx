@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Price } from "@/components/ui/price";
+import { BLUR_DATA_URL } from "@/lib/shop/images";
 import { cn, isNewProduct, isSoldOut } from "@/lib/utils";
 import type { ProductWithDetails } from "@/types";
 
@@ -11,10 +12,12 @@ type ProductCardProps = {
   product: ProductWithDetails;
   /** Mark the first above-the-fold cards so their images load eagerly. */
   priority?: boolean;
+  /** Heading level for the product name: h3 under a section title, h2 directly under the page title. */
+  headingLevel?: "h2" | "h3";
   className?: string;
 };
 
-export function ProductCard({ product, priority = false, className }: ProductCardProps) {
+export function ProductCard({ product, priority = false, headingLevel: Heading = "h3", className }: ProductCardProps) {
   const [primary, secondary] = product.images;
   const onSale =
     product.compare_at_price_paise !== null && product.compare_at_price_paise > product.price_paise;
@@ -33,6 +36,8 @@ export function ProductCard({ product, priority = false, className }: ProductCar
               fill
               sizes={IMAGE_SIZES}
               priority={priority}
+              placeholder="blur"
+              blurDataURL={BLUR_DATA_URL}
               className="object-cover"
             />
           )}
@@ -60,11 +65,11 @@ export function ProductCard({ product, priority = false, className }: ProductCar
 
         <div className="mt-3 flex flex-col gap-1">
           <p className="text-xs uppercase tracking-wider text-navy-400">{product.category.name}</p>
-          <h3 className="text-sm font-medium leading-snug text-navy-800 sm:text-base">{product.name}</h3>
+          <Heading className="text-sm font-medium leading-snug text-navy-800 sm:text-base">{product.name}</Heading>
           <Price
             amount={product.price_paise}
             compareAt={product.compare_at_price_paise ?? undefined}
-            className={cn("text-sm sm:text-base", soldOut && "text-navy-300")}
+            className={cn("text-sm sm:text-base", soldOut && "text-navy-400")}
           />
         </div>
       </Link>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
+import { BLUR_DATA_URL } from "@/lib/shop/images";
 import type { ProductImage } from "@/types";
 
 type HeroProps = {
@@ -18,6 +19,8 @@ export function Hero({ image }: HeroProps) {
             alt={image.alt}
             fill
             priority
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="object-cover"
           />
@@ -26,7 +29,7 @@ export function Hero({ image }: HeroProps) {
 
       <div className="flex items-center bg-cream-100 py-12 lg:order-1 lg:py-20">
         <Container className="lg:ml-auto lg:mr-0 lg:max-w-[40rem] lg:px-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold-600">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold-700">
             New season
           </p>
           <h1

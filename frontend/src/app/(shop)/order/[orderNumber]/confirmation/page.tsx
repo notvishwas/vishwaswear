@@ -42,7 +42,7 @@ export default async function OrderConfirmationPage({
       <div className="text-center">
         <span
           aria-hidden="true"
-          className="mx-auto flex size-14 items-center justify-center rounded-full border border-gold-500 text-2xl text-gold-600"
+          className="mx-auto flex size-14 items-center justify-center rounded-full border border-gold-500 text-2xl text-gold-700"
         >
           {paid ? "✓" : "…"}
         </span>

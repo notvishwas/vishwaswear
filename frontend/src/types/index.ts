@@ -15,10 +15,7 @@ export type OrderEvent = Tables["order_events"]["Row"];
 export type Profile = Tables["profiles"]["Row"];
 
 export type OrderStatus = Enums["order_status"];
-export type UserRole = Enums["user_role"];
 
-export type NewOrder = Tables["orders"]["Insert"];
-export type NewOrderItem = Tables["order_items"]["Insert"];
 
 /** A product with everything the storefront needs to render it. */
 export type ProductWithDetails = Product & {

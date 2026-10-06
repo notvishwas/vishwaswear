@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidateStorefront } from "@/lib/revalidate";
 import { z } from "zod";
 import { failure, success, UNIQUE_VIOLATION, type ActionResult } from "@/lib/admin/action-result";
 import { productFormSchema, rupeesToPaise, type ProductFormInput } from "@/lib/admin/product-schema";
@@ -71,6 +72,7 @@ export async function saveProduct(input: SaveProductInput): Promise<ActionResult
   await removeProductImageFiles(previousUrls.filter((url) => !keptUrls.has(url)));
 
   revalidatePath("/admin/products");
+  revalidateStorefront();
   return success(id ? "Product saved." : "Product created.", { id: productId });
 }
 
@@ -86,6 +88,7 @@ export async function setProductActive(productId: string, active: boolean): Prom
   }
 
   revalidatePath("/admin/products");
+  revalidateStorefront();
   return success(active ? "Product is now visible in the shop." : "Product hidden from the shop.");
 }
 
@@ -111,6 +114,7 @@ export async function deleteProduct(productId: string): Promise<ActionResult<{ a
     const { error } = await db.from("products").update({ is_active: false, is_featured: false }).eq("id", productId);
     if (error) return failure("We couldn't archive the product. Please try again.");
     revalidatePath("/admin/products");
+  revalidateStorefront();
     return success("This product appears in past orders, so it was archived instead of deleted.", { archived: true });
   }
 
@@ -123,5 +127,6 @@ export async function deleteProduct(productId: string): Promise<ActionResult<{ a
 
   await removeProductImageFiles((images ?? []).map((row) => row.url));
   revalidatePath("/admin/products");
+  revalidateStorefront();
   return success("Product deleted.", { archived: false });
 }

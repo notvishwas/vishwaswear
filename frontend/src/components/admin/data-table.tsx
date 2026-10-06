@@ -52,7 +52,7 @@ function SortHeader<SortKey extends string>({
   return (
     <Link href={href} className="inline-flex items-center gap-1 hover:text-navy-800">
       {column.header}
-      <span aria-hidden="true" className={active ? "text-gold-600" : "text-navy-200"}>
+      <span aria-hidden="true" className={active ? "text-gold-700" : "text-navy-200"}>
         {active ? (query.dir === "asc" ? "↑" : "↓") : "↕"}
       </span>
     </Link>

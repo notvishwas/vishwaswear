@@ -14,7 +14,7 @@ export function Price({ amount, compareAt, className, ...props }: PriceProps) {
     <span className={cn("inline-flex items-baseline gap-2", className)} {...props}>
       <span className="font-semibold">{formatPrice(amount)}</span>
       {onSale && (
-        <s className="text-sm font-normal text-navy-300">{formatPrice(compareAt)}</s>
+        <s className="text-sm font-normal text-navy-400">{formatPrice(compareAt)}</s>
       )}
     </span>
   );

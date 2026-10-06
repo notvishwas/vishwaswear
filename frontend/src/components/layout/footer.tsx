@@ -10,6 +10,7 @@ const careLinks = [
   { label: "Returns", href: "/returns" },
   { label: "Size guide", href: "/size-guide" },
   { label: "Contact", href: "/contact" },
+  { label: "About us", href: "/about" },
 ];
 
 function LinkColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
@@ -73,7 +74,23 @@ export async function Footer() {
         </div>
 
         <div className="mt-12 border-t border-navy-500 pt-6 text-xs text-navy-300">
-          © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p>
+              © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
+            </p>
+            <ul className="flex gap-5">
+              <li>
+                <Link href="/privacy" className="hover:text-white">
+                  Privacy policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="hover:text-white">
+                  Terms of service
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
       </Container>
     </footer>

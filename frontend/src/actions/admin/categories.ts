@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidateStorefront } from "@/lib/revalidate";
 import { z } from "zod";
 import { failure, success, UNIQUE_VIOLATION, type ActionResult } from "@/lib/admin/action-result";
 import { requireAdmin } from "@/lib/auth/admin";
@@ -58,6 +59,7 @@ export async function createCategory(input: CategoryInput): Promise<ActionResult
   }
 
   revalidatePath("/admin/categories");
+  revalidateStorefront();
   return success("Category created.");
 }
 
@@ -75,6 +77,7 @@ export async function updateCategory(id: string, input: CategoryInput): Promise<
   }
 
   revalidatePath("/admin/categories");
+  revalidateStorefront();
   return success("Category saved.");
 }
 
@@ -97,6 +100,7 @@ export async function moveCategory(id: string, direction: "up" | "down"): Promis
   if (results.some((result) => result.error)) return failure("We couldn't reorder the categories. Please try again.");
 
   revalidatePath("/admin/categories");
+  revalidateStorefront();
   return success("Order updated.");
 }
 
@@ -119,5 +123,6 @@ export async function deleteCategory(id: string): Promise<ActionResult> {
   }
 
   revalidatePath("/admin/categories");
+  revalidateStorefront();
   return success("Category deleted.");
 }

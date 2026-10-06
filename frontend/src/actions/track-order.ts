@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { isWithinRateLimit, RATE_LIMIT_MESSAGE } from "@/lib/security/rate-limit";
 import { getOrderByNumber, normalizeOrderNumber } from "@/lib/orders/queries";
 import type { OrderStatus } from "@/types";
 
@@ -38,6 +39,10 @@ export async function trackOrder(_previous: TrackOrderState, formData: FormData)
   const parsed = trackOrderSchema.safeParse(values);
   if (!parsed.success) {
     return { status: "error", message: parsed.error.issues[0]?.message ?? NOT_FOUND_MESSAGE, values };
+  }
+
+  if (!(await isWithinRateLimit({ scope: "track-order", limit: 20, windowSeconds: 600 }))) {
+    return { status: "error", message: RATE_LIMIT_MESSAGE, values };
   }
 
   try {

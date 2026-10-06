@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { CloseIcon } from "@/components/layout/icons";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { cn } from "@/lib/utils";
 
 type FilterShellProps = {
@@ -15,6 +16,8 @@ type FilterShellProps = {
 
 export function FilterShell({ panel, sort, activeCount, children }: FilterShellProps) {
   const [open, setOpen] = useState(false);
+  const sheetRef = useRef<HTMLElement>(null);
+  useFocusTrap(open, sheetRef);
 
   useEffect(() => {
     if (!open) return;
@@ -42,6 +45,7 @@ export function FilterShell({ panel, sort, activeCount, children }: FilterShellP
       />
 
       <aside
+        ref={sheetRef}
         id="filters"
         aria-label="Filters"
         role={open ? "dialog" : undefined}

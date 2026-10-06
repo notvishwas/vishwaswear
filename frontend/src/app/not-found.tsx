@@ -6,7 +6,7 @@ export default function NotFound() {
   return (
     <ShopShell>
     <Container size="narrow" className="flex flex-col items-center py-24 text-center sm:py-32">
-      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold-600">Error 404</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold-700">Error 404</p>
       <h1 className="mt-4 text-3xl font-semibold tracking-tight text-navy-800 sm:text-4xl">
         We can&apos;t find that page
       </h1>

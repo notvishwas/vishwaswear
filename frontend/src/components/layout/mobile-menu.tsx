@@ -1,14 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useHasSession } from "@/hooks/use-auth-user";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { CloseIcon, MenuIcon } from "./icons";
 import type { NavLink } from "./nav-links";
 
-export function MobileMenu({ links, accountLinks }: { links: NavLink[]; accountLinks: NavLink[] }) {
+export function MobileMenu({ links }: { links: NavLink[] }) {
   const [open, setOpen] = useState(false);
+  const signedIn = useHasSession() === true;
+  const panelRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(open, panelRef);
+  const accountLinks: NavLink[] = signedIn ? [{ label: "Your account", href: "/account" }] : [{ label: "Sign in", href: "/login" }];
 
   useEffect(() => {
     if (!open) return;
@@ -48,6 +54,7 @@ export function MobileMenu({ links, accountLinks }: { links: NavLink[]; accountL
 
       <div
         id="mobile-menu"
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label="Menu"

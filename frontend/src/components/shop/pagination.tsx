@@ -40,7 +40,7 @@ export function Pagination({ page, totalPages, hrefFor }: PaginationProps) {
       <ul className="flex items-center gap-2">
         {getPageItems(page, totalPages).map((item, index) =>
           item === "gap" ? (
-            <li key={`gap-${index}`} aria-hidden="true" className="px-1 text-navy-300">
+            <li key={`gap-${index}`} aria-hidden="true" className="px-1 text-navy-400">
               …
             </li>
           ) : (

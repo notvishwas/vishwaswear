@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BLUR_DATA_URL } from "@/lib/shop/images";
 import type { Category } from "@/types";
 
 export function CategoryCard({ category }: { category: Category }) {
@@ -14,12 +15,14 @@ export function CategoryCard({ category }: { category: Category }) {
           alt=""
           fill
           sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
+          placeholder="blur"
+          blurDataURL={BLUR_DATA_URL}
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
       )}
       <span className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-cream-100/95 px-3 py-3 text-sm font-semibold text-navy-800 sm:px-4 sm:text-base">
         {category.name}
-        <span aria-hidden="true" className="text-gold-600 transition-transform group-hover:translate-x-1">
+        <span aria-hidden="true" className="text-gold-700 transition-transform group-hover:translate-x-1">
           →
         </span>
       </span>

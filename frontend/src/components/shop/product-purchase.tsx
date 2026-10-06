@@ -183,7 +183,7 @@ export function ProductPurchase({ productId, slug, image, name, pricePaise, comp
                     selected
                       ? "border-navy-800 bg-navy-800 text-white"
                       : "border-navy-200 bg-white text-navy-800 hover:border-navy-800",
-                    !available && "cursor-not-allowed border-dashed bg-cream-200 text-navy-300 line-through hover:border-navy-200",
+                    !available && "cursor-not-allowed border-dashed bg-cream-200 text-navy-400 line-through hover:border-navy-200",
                   )}
                 >
                   {option}

@@ -1,7 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { MAX_QUANTITY_PER_LINE } from "@/lib/shop/variants";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import { formatPrice } from "@/lib/utils";
 import type { CartLine, CartWarning, ValidatedCart } from "@/types/cart";
 
@@ -38,7 +38,7 @@ export async function validateCartItems(input: CartItemsInput): Promise<Validate
     });
   }
 
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   const { data, error } = await supabase
     .from("product_variants")
     .select(

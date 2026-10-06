@@ -9,6 +9,25 @@ import { ProductPurchase } from "@/components/shop/product-purchase";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getProductBySlug, getRelatedProducts } from "@/lib/data";
+import { createPublicSupabaseClient } from "@/lib/supabase/public";
+
+// Product pages are cached and refreshed every minute, and immediately on admin edits or a paid order.
+export const revalidate = 60;
+
+/** Pre-builds the newest products so their pages are served from cache from the first visit. */
+export async function generateStaticParams() {
+  const { data, error } = await createPublicSupabaseClient()
+    .from("products")
+    .select("slug")
+    .eq("is_active", true)
+    .order("created_at", { ascending: false })
+    .limit(100);
+  if (error) {
+    console.error("[product] generateStaticParams failed", error.message);
+    return [];
+  }
+  return data.map((product) => ({ slug: product.slug }));
+}
 
 function truncate(text: string, max: number) {
   return text.length <= max ? text : `${text.slice(0, max - 1).trimEnd()}…`;
@@ -76,7 +95,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
 
           <div className="mt-8 flex flex-col gap-8 lg:mt-0">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-600">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-700">
                 {product.category.name}
               </p>
               <h1 className="mt-2 text-2xl font-semibold tracking-tight text-navy-800 sm:text-3xl">

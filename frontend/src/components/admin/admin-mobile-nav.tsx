@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CloseIcon, MenuIcon } from "@/components/layout/icons";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { cn } from "@/lib/utils";
 import { AdminNavLinks } from "./admin-nav-links";
 
 /** Hamburger plus slide-in drawer holding the same links as the desktop sidebar. */
 export function AdminMobileNav({ siteName }: { siteName: string }) {
   const [open, setOpen] = useState(false);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(open, drawerRef);
 
   useEffect(() => {
     if (!open) return;
@@ -47,6 +50,7 @@ export function AdminMobileNav({ siteName }: { siteName: string }) {
 
       <div
         id="admin-drawer"
+        ref={drawerRef}
         role="dialog"
         aria-modal="true"
         aria-label="Admin menu"
